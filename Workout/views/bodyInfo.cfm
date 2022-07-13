@@ -1,6 +1,6 @@
 <cfscript>
-	person = createObject("component" , "WorkoutCFC.Person");
-	mgrPBI = createObject("component" , "WorkoutCFC.MgrPersonBodyInfo");
+	person = createObject("component" , "workoutCFC.person");
+	mgrPBI = createObject("component" , "workoutCFC.mgrPersonBodyInfo");
 	
 	param name = "bodyWeightID" default = "";
 	param name = "personID" default = "";
