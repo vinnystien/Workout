@@ -1,6 +1,6 @@
 <cfscript>
-	person = createObject("component" , "WorkoutCFC.Person");
-	mgrPBI = createObject("component" , "WorkoutCFC.MgrPersonBodyInfo");
+	person = createObject("component" , "WorkoutCFC.person");
+	mgrPBI = createObject("component" , "WorkoutCFC.mgrPersonBodyInfo");
 	
 	param name = "pid" default = "";
 	param name = "firstName" default = ""; 
