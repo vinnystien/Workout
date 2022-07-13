@@ -1,0 +1,38 @@
+body{
+	/*background-color:#000; */
+	/*color:#ffffff;*/
+	font-family:Arial;
+	font-weight: bolder;
+	max-width: 500px;
+	margin: auto; 
+	padding:10px;
+}
+
+tbody{
+	border:medium;
+	/*border-color:#0ffff;*/
+}
+
+th{
+	/*background-color: #c0c0c0;*/
+	font-size: 12px;
+}
+
+a{
+	/*color:#ffffff;*/
+}
+
+.spanStyle{
+	/*color:#ffffff;*/
+	cursor:pointer;
+	text-decoration: underline;
+}
+
+.spanBold{
+	font-weight: bold;
+	/*color: #ffffff;*/
+}
+
+input[type="text"]{
+  background-color : #e1e1e1; 
+}
