@@ -1,9 +1,10 @@
 <cfscript>
 	person = createObject("component" , "workoutCFC.person");
 	mgrPBI = createObject("component" , "workoutCFC.mgrPersonBodyInfo");
+	bodyInfo = createObject("component" , "workoutCFC.bodyInfo");
 	
-	param name = "bodyWeightID" default = "";
 	param name = "personID" default = "";
+	param name = "bodyWeightID" default = "";
 	param name = "weight" default = ""; 
 	param name = "dateTime" default = "";
 	param name = "firstName" default = ""; 
@@ -12,7 +13,7 @@
 	
 	switch(action) 
 	{
-		case "add":
+		/*case "add":
 			view = 'form';
 			action = "insert";
 		break;
@@ -32,68 +33,106 @@
 			view = 'list';
 		break;
      
-		case "insert":
-			bodyInfo.insert( '#personID#', '#weight#' );
-			view = 'list';
-		break;
+		
      
 		case "update":
-			bodyInfo.update( '#personID#', '#weight#' );
+			bodyInfo.update( '#personID#', '#weight#' ); 
+			view = 'list';
+		break;*/
+		
+		case "insert":
+			bodyInfo.insert( personID, height, weight );
 			view = 'list';
 		break;
 		
 		default: 
 			view = "list";
+			action = "insert";
 		break;
 	}
-
+	
 	if( view == 'list' )
 	{
-		allPeople = person.getAllPeople();
-		counter = 1;
+		infoQry = mgrPBI.getPersonAndInfoByIDorName( personID='#personID#' );
+		inches = int(numberFormat(infoQry.hInches));
+		cfwriteAbort(infoQry);
 	}
+
 </cfscript>
 
 <cfinclude template="header.cfm" >
+<!---
+<cf_writeAbort var="#infoQry#" >
+<cfdump var="#bodyInfo.ConvertInchesToFeet(73)#" >--->
+
 
 <cfswitch expression="#view#">
 	<cfcase value="list">
-		<table style="width:500px; border:medium;" border="5">
+		<cfoutput>
+		<table border="1" style="width:500px;">
 			<tr>
-				<th style="border:#c0c0c0">
-					<div style="float:left; padding:6px;">Search People:</div>
-					<div style="float:right; padding:2px;">
-						<input type="text" name="searchName" id="searchName" value="">
-					</div>
-				</th>
-				<th style="text-align:right;">
-					<a href="index.cfm?action=add" style="text-decoration:none">Create Person >></a>
-				</th>
-			</tr>
+				<td>
+					<cfform action="bodyInfo.cfm" method="post" disableButtons="true">
+						<cfinput type="hidden" name="action" value="#action#"/>
+						<cfinput type="hidden" name="personID" value="#infoQry.pID#"/>
+						
+						<a href="javascript:history.back()" style="text-decoration:none;"><< Back to list</a><br><br>
+						
+						Height:
+						<cfinput
+							type="text"
+							name="height"
+							id="height"
+							label="Height"
+							value="#inches#"
+							style="width: 50px;"
+							required="true"
+							message="Please enter a first name."
+						/>
+						
+						Weight:
+						<cfinput
+							type="text"
+							name="weight"
+							id="weight"
+							label="Weight"
+							value=""
+							style="width: 50px;"
+							required="true"
+							message="Please enter a first name."
+						/>
+						
+						&nbsp;&nbsp;&nbsp;
+						<cfinput type="submit" name="submitButton" value="Submit" />
+					</cfform>
+				</td>
 			
-			<tbody id="personTable">
-				<cfoutput query="allPeople">
-					<tr style="border-color:##ffff; border-width:thick;">
-						<td style="border-color:##ffff;">
-							<strong>#firstName# #lastName#</strong>
-							<div class="personInfo" id="personInfo#counter#">
-								<span class="spanBold">First Name:</span> #firstName#<br>
-								<span class="spanBold">Last Name:</span> #lastName#<br>
-								<span class="spanBold">Email:</span> #email#
-							</div>
-						</td>
-						<td style="vertical-align:top; text-align:right;">
-							<span class="showHide spanStyle" id="#counter#">more</span> | 
-							<a href="index.cfm?action=edit&personID=#personID#">edit</a> |
-							<a href="index.cfm?action=delete&personID=#personID#" onclick="return confirm('Are you sure you want to delete this Person?');">delete</a>
-						</td>
+			</tr>
+		</table>
+		</cfoutput>
+		
+		<table border="1" style="width:500px;">
+			<cfoutput query="infoQry" group="firstName">
+				<tr>
+					<td colspan="3">#infoQry.firstName# #infoQry.lastName#</td>
+				</tr>
+				<tr>
+					<td>Height</td>
+					<td>Weight</td>
+					<td>Date</td>
+				</tr>
+				<cfoutput>
+					<tr>
+						<td>#inches# inches / #heightInFeet#</td>
+						<td>#weight#</td>
+						<td>#dateFormat(date, "short" )#</td>
 					</tr>
-					<cfset counter++>
 				</cfoutput>
-			</tbody>
+			</cfoutput>
+
 		</table>
 	</cfcase>
-
+<!---
 	<cfcase value="form">
 		<cfoutput>
 			<cfform action="index.cfm" method="post" disableButtons="true">
@@ -145,36 +184,7 @@
 				<cfinput type="button" name="cancelButton" value="Cancel" onclick="cancelOut()"/>
 			</cfform>
 		</cfoutput>
-	</cfcase>
+	</cfcase>--->
 </cfswitch>
-
-<script>
-	$(document).ready(function(){
-		
-		$('#searchName').on('keyup', function() {
-			var value = $(this).val().toLowerCase();
-			
-			$('#personTable tr').filter(function() {
-				$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-			});
-		});
-		
-		$('.personInfo').hide();
-		
-    	$('.showHide').on('click', function () {
-    		eInfo = $(this).attr('id');
-    		$('#personInfo' + eInfo).toggle();
-    		$(this).text($(this).text() == 'less' ? 'more' : 'less');
-    	});
-	});
-
-	function cancelOut()
-	{
-		if( confirm("Are you sure that you want to cancel?") )
-		{
-			window.location = "http://localhost:8500/Apps/Workout/Views/index.cfm";
-		}
-	}
-</script>
 
 <cfinclude template="footer.cfm" >

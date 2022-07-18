@@ -64,7 +64,7 @@
 						<input type="text" name="searchName" id="searchName" value="">
 					</div>
 				</th>
-				<th style="text-align:right;">
+				<th style="border:#c0c0c0; text-align:right;">
 					<a href="index.cfm?action=add" style="text-decoration:none">Create Person >></a>
 				</th>
 			</tr>
@@ -82,7 +82,7 @@
 										<td>Weight</td>
 									</tr>
 									<tr>
-										<td><cfif len(heightInches)>#heightInches# / #heightFeet#<cfelse>No Measurement</cfif></td>
+										<td><cfif len(heightInInches)>#heightInInches# / #heightInFeet#<cfelse>No Measurement</cfif></td>
 										<td><cfif len(weight)>#weight#<cfelse>No Measurement</cfif></td>
 									</tr>
 								</table>
